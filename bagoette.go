@@ -2,6 +2,6 @@ package bagoette
 
 import "fmt"
 
-func printTest(){
+func PrintTest(){
 	fmt.Println("test")
 }
