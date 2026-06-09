@@ -4,8 +4,9 @@ import (
 	"net/http"
 )
 
-func (b *BagoetteClient) ListenAndServe() error {
-	return http.ListenAndServe(b.Host + ":" + b.Port, b.MuxRouter)
+func (b *BagoetteClient) ListenAndServe(port string) error {
+	b.SetPort(port)
+	return http.ListenAndServe(":" + b.Port, b.MuxRouter)
 }
 
 func (b *BagoetteClient) Close() {
