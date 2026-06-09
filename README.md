@@ -1,4 +1,4 @@
-# Bagoette 🥖
+# **Bagoette**: Best Go RestfulAPI Library for Beginner 🥖
 ## yo whats up gng ✌️
 So currently i'am trying to construct a **Golang RestfulAPI** library like **gin** or **echo** 🏗️ but... its specialized to help beginner to create their own Golang backend service.
 
