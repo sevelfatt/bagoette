@@ -5,8 +5,8 @@ import (
 )
 
 func (b *BagoetteClient) registerAllRoutes() {
-	for _, route := range b.Router.Routes {
-		b.AddRoute(route)
+	for _, route := range b.Routes {
+		b.AddRoute(*route)
 	}
 }
 

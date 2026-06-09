@@ -13,9 +13,6 @@ type Route struct {
 	MuxRoute *mux.Route
 }
 
-type Router struct {
-	Routes []Route
-}
 
 func (r *Route) SetName(name string) *Route {
 	r.Name = name
@@ -24,5 +21,5 @@ func (r *Route) SetName(name string) *Route {
 
 func (b *BagoetteClient) AddRoute(route Route) {
 	route.MuxRoute = b.MuxRouter.Handle(route.Path, route.Handler)
-	b.Router.Routes = append(b.Router.Routes, route)
+	b.Routes = append(b.Routes, &route)
 }
