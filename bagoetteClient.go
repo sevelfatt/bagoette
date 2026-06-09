@@ -10,15 +10,21 @@ type BagoetteClient struct {
 	port int // of course this the port that will be used to serve the server
 	httpClient *http.Client // http client will be used to make requests
 	httpHandler *http.ServeMux
-	routes []*Route // router will be used to route requests
+	router *Router // router will be used to route requests
 }
 
 func NewClient() *BagoetteClient {
 	return &BagoetteClient{
 		httpClient: http.DefaultClient,
 		httpHandler: http.NewServeMux(),
-		routes: []*Route{},
+		router: &Router{},
 		port: 8080,
+	}
+}
+
+func (b *BagoetteClient) NewRouter() *Router {
+	return &Router{
+		httpHandler: b.httpHandler,
 	}
 }
 

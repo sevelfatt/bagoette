@@ -7,8 +7,8 @@ import (
 )
 
 func (b *BagoetteClient) registerAllRoutes() {
-	for _, route := range b.routes {
-		b.RegisterRoute(route)
+	for _, route := range Routes {
+		b.RegisterRoute(&route)
 	}
 }
 
@@ -21,8 +21,8 @@ func (b *BagoetteClient) Serve(port int) error {
 
 func (b *BagoetteClient) ShowRoutes() {
 	fmt.Println("Registered Routes:")
-	for _, route := range b.routes {
-		fmt.Println(route.name, " | ", route.pattern)
+	for _, route := range Routes {
+		fmt.Println("- "+ route.pattern)
 	}
 }
 
