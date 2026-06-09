@@ -20,8 +20,9 @@ func (b *BagoetteClient) Serve(port int) error {
 }
 
 func (b *BagoetteClient) ShowRoutes() {
+	fmt.Println("Registered Routes:")
 	for _, route := range b.routes {
-		fmt.Println(route.pattern)
+		fmt.Println(route.name, " | ", route.pattern)
 	}
 }
 
