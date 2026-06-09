@@ -7,7 +7,7 @@ yeah, i know the codes and the project structures are still really messy because
 
 so yeah maybe you guys can give me some advice?
 ## installation
-just give it try dawg 🥖
+just give it a try dawg 🥖
 ```bash
 go get github.com/sevelfatt/bagoette
 ```
