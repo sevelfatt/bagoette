@@ -15,8 +15,8 @@ type BagoetteClient struct {
 
 func NewClient() *BagoetteClient {
 	return &BagoetteClient{
-		httpClient: &http.Client{},
-		httpHandler: &http.ServeMux{},
+		httpClient: http.DefaultClient,
+		httpHandler: http.NewServeMux(),
 		routes: []*Route{},
 		port: 8080,
 	}

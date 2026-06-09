@@ -14,12 +14,19 @@ type Route struct {
 }
 
 
-func (r *Route) SetName(name string) *Route {
+func (r Route) SetName(name string) *Route {
 	r.name = name
-	return r
+	return &r
 }
 
-func (b *BagoetteClient) AddRoute(route Route) {
+func (b *BagoetteClient) RegisterRoute(route *Route) {
 	b.httpHandler.Handle(route.pattern, route.handler)
-	b.routes = append(b.routes, &route)
+}
+
+func (b *BagoetteClient) GetRoutes() []*Route {
+	return b.routes
+}
+
+func (b *BagoetteClient) AddRoute(route *Route) {
+	b.routes = append(b.routes, route)
 }
