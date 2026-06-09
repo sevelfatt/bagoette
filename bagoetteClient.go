@@ -8,15 +8,16 @@ import (
 
 type BagoetteClient struct {
 	Port string
-	Host string
 	HttpClient *http.Client
 	MuxRouter *mux.Router
+	Router *Router
 }
 
 func NewClient() *BagoetteClient {
 	return &BagoetteClient{
 		HttpClient: &http.Client{},
 		MuxRouter: mux.NewRouter(),
+		Router: &Router{},
 		Port: "8080",
 	}
 }

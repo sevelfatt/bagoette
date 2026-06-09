@@ -4,8 +4,15 @@ import (
 	"net/http"
 )
 
-func (b *BagoetteClient) ListenAndServe(port string) error {
+func (b *BagoetteClient) registerAllRoutes() {
+	for _, route := range b.Router.Routes {
+		b.AddRoute(route)
+	}
+}
+
+func (b *BagoetteClient) Serve(port string) error {
 	b.SetPort(port)
+	b.registerAllRoutes()
 	return http.ListenAndServe(":" + b.Port, b.MuxRouter)
 }
 
