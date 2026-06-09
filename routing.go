@@ -7,19 +7,19 @@ import (
 )
 
 type Route struct {
-	Name string
-	Path string
-	Handler http.HandlerFunc
-	MuxRoute *mux.Route
+	name string
+	pattern string
+	handler http.HandlerFunc
+	muxRoute *mux.Route
 }
 
 
 func (r *Route) SetName(name string) *Route {
-	r.Name = name
+	r.name = name
 	return r
 }
 
 func (b *BagoetteClient) AddRoute(route Route) {
-	route.MuxRoute = b.MuxRouter.Handle(route.Path, route.Handler)
-	b.Routes = append(b.Routes, &route)
+	b.httpHandler.Handle(route.pattern, route.handler)
+	b.routes = append(b.routes, &route)
 }

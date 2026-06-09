@@ -3,74 +3,74 @@ package bagoette
 import "net/http"
 
 func (b *BagoetteClient) Get(path string, handler http.HandlerFunc) Route {
-	fullPath := "GET " + path
+	pattern := "GET " + path
 	return Route{
-		Path: fullPath,
-		Handler: handler,
+		pattern: pattern,
+		handler: handler,
 	}
 	
 }
 
 func (b *BagoetteClient) Post(path string, handler http.HandlerFunc) Route {
-	fullPath := "POST " + path
+	pattern := "POST " + path
 	return Route{
-		Path: fullPath,
-		Handler: handler,
+		pattern: pattern,
+		handler: handler,
 	}
 }
 
 func (b *BagoetteClient) Put(path string, handler http.HandlerFunc) Route {
-	fullPath := "PUT " + path
+	pattern := "PUT " + path
 	return Route{
-		Path: fullPath,
-		Handler: handler,
+		pattern: pattern,
+		handler: handler,
 	}
 }
 
 func (b *BagoetteClient) Delete(path string, handler http.HandlerFunc) Route {
-	fullPath := "DELETE " + path
+	pattern := "DELETE " + path
 	return Route{
-		Path: fullPath,
-		Handler: handler,
+		pattern: pattern,
+		handler: handler,
 	}
 }
 
 func (b *BagoetteClient) Patch(path string, handler http.HandlerFunc) Route {
-	fullPath := "PATCH " + path
+	pattern := "PATCH " + path
 	return Route{
-		Path: fullPath,
-		Handler: handler,
+		pattern: pattern,
+		handler: handler,
 	}
 }
 
 func (b *BagoetteClient) Head(path string, handler http.HandlerFunc) Route {
-	fullPath := "HEAD " + path
+	pattern := "HEAD " + path
 	return Route{
-		Path: fullPath,
-		Handler: handler,
+		pattern: pattern,
+		handler: handler,
 	}
 }
 
 func (b *BagoetteClient) Options(path string, handler http.HandlerFunc) Route {
-	fullPath := "OPTIONS " + path
+	pattern := "OPTIONS " + path
 	return Route{
-		Path: fullPath,
-		Handler: handler,
+		pattern: pattern,
+		handler: handler,
 	}
 }
 
 func (b *BagoetteClient) Trace(path string, handler http.HandlerFunc) Route {
-	fullPath := "TRACE " + path
+	pattern := "TRACE " + path
 	return Route{
-		Path: fullPath,
-		Handler: handler,
+		pattern: pattern,
+		handler: handler,
 	}
 }
 
 func (b *BagoetteClient) Connect(path string, handler http.HandlerFunc) Route {
-	fullPath := "CONNECT " + path
+	pattern := "CONNECT " + path
 	return Route{
-		Path: fullPath,
-		Handler: handler,
+		pattern: pattern,
+		handler: handler,
 	}
 }
