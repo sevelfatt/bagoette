@@ -6,10 +6,12 @@ So currently i'am trying to construct a **Golang RestfulAPI** library like **gin
 yeah, i know the codes and the project structures are still really messy because i'm new to this Programming language🥀
 
 so yeah maybe you guys can give me some advice?
-## installation
+
+## documentation
+### installation
 just give it a try dawg 🥖
 ```bash
 go get github.com/sevelfatt/bagoette
 ```
-## documentation
+
 hold on gng ✌️, i just started this project
