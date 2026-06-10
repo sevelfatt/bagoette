@@ -16,7 +16,7 @@ func (r *Router) NewRoute(method string, path string, handler HandlerFunc) *Rout
 		method: method,
 		path: r.prefix + path,
 		pattern: method + " " + r.prefix + path,
-		handlerFunc: r.NotFoundMiddleware(fn),
+		handlerFunc: r.ApplyErrorMiddlewares(fn),
 	}	
 	r.AddRoute(route)
 	return route
