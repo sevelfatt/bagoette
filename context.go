@@ -6,13 +6,47 @@ import (
 	"github.com/sevelfatt/bagoette/utils"
 )
 
+//Context struct: work as the container of the request and response
 type Context struct {
 	w http.ResponseWriter
 	r *http.Request
+
+	currentHandlerIndex int
+	handlers []HandlerFunc
+	data map[string]any
+}
+
+func (c *Context) Reset() {
+	c.currentHandlerIndex = 0
+	c.handlers = nil
+	c.data = nil
+}
+
+func (c *Context) Set(key string, value any) {
+	if c.data == nil {
+		c.data = make(map[string]any)
+	}
+	c.data[key] = value
+}
+
+func (c *Context) Get(key string) any {
+	return c.data[key]
+}
+
+func (c *Context) Abort() {
+	c.currentHandlerIndex = len(c.handlers)
+}
+
+func (c *Context) Next() {
+	if c.currentHandlerIndex == len(c.handlers) {
+		return
+	}
+	c.currentHandlerIndex++
+	c.handlers[c.currentHandlerIndex](c)
 }
 
 func (c *Context) Bind(body any) error {
-	return utils.DecodeJSON(c.r, body)
+	return utils.DecodeJSONFromRequestBody(c.r, body)
 }
 
 func (c *Context) Response(status int, data any) {

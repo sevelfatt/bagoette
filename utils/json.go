@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func DecodeJSON(r *http.Request, body any) error {
+func DecodeJSONFromRequestBody(r *http.Request, body interface{}) error {
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		return err
 	}

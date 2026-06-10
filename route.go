@@ -8,9 +8,11 @@ type Route struct {
 	handlerFunc HandlerFunc
 }
 
-func (r *Router) NewRoute(method string, path string, handler HandlerFunc) *Route {
+func (r *Router) NewRoute(method string, path string, handlers []HandlerFunc) *Route {
 	fn := func(c *Context){
-		handler(c)
+		c.handlers = append(c.handlers, handlers...)
+		c.handlers[0](c)
+		c.Reset()
 	}
 	route := &Route{
 		method: method,
