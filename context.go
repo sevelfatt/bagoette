@@ -24,3 +24,19 @@ func (c *Context) Error(status int, message string) {
 		"error": message,
 	})
 }
+
+func (c *Context) Query(key string) string {
+	return c.r.URL.Query().Get(key)
+}
+
+func (c *Context) Header(key string) string {
+	return c.r.Header.Get(key)
+}
+
+func (c *Context) SetHeader(key string, value string) {
+	c.w.Header().Set(key, value)
+}
+
+func (c *Context) Param(key string) string {
+	return c.r.PathValue(key)
+}

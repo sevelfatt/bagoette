@@ -1,6 +1,10 @@
 package bagoette
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/sevelfatt/bagoette/utils"
+)
 
 func (R *Router) ApplyErrorMiddlewares(next HandlerFunc) HandlerFunc {
 	return R.NotFoundMiddleware(R.MethodNotAllowedMiddleware(R.InternalServerErrorMiddleware(next)))
@@ -9,7 +13,7 @@ func (R *Router) ApplyErrorMiddlewares(next HandlerFunc) HandlerFunc {
 func (R *Router) NotFoundMiddleware(next HandlerFunc) HandlerFunc {
 	fn := func(c *Context) {
 		for _, route := range *R.routes {
-			if route.path == c.r.URL.Path {
+			if utils.MatchRoute(route.path, c.r.URL.Path) {
 				next(c)
 				return
 			}
@@ -22,7 +26,7 @@ func (R *Router) NotFoundMiddleware(next HandlerFunc) HandlerFunc {
 func (R *Router) MethodNotAllowedMiddleware(next HandlerFunc) HandlerFunc {
 	fn := func(c *Context) {
 		for _, route := range *R.routes {
-			if route.path == c.r.URL.Path {
+			if utils.MatchRoute(route.path, c.r.URL.Path) {
 				next(c)
 				return
 			}
