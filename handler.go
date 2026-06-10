@@ -2,17 +2,6 @@ package bagoette
 
 import "net/http"
 
-func (r *Router) NewRoute(method string, path string, handler http.HandlerFunc) *Route {
-	route := &Route{
-		method: method,
-		path: r.prefix + path,
-		pattern: method + " " + r.prefix + path,
-		handler: r.NotFoundMiddleware(handler),
-	}	
-	r.AddRoute(route)
-	return route
-}
-
 func (r *Router) Get(path string, handler http.HandlerFunc) *Route {
 	return r.NewRoute("GET", path, handler)
 }

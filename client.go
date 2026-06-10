@@ -24,14 +24,6 @@ func NewClient() *BagoetteClient {
 	}
 }
 
-func (b *BagoetteClient) NewRouter() *Router {
-	return &Router{
-		httpHandler: b.httpHandler,
-		routes: b.routes,
-		prefix: "",
-	}
-}
-
 func (b *BagoetteClient) SetPort(port int) {
 	b.port = port
 }

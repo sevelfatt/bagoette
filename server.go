@@ -6,12 +6,6 @@ import (
 	"strconv"
 )
 
-func (b *BagoetteClient) registerAllRoutes() {
-	for _, route := range *b.routes {
-		b.RegisterRoute(&route)
-	}
-}
-
 func (b *BagoetteClient) Serve(port int) error {
 	b.SetPort(port)
 	b.registerAllRoutes()
