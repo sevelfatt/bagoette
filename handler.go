@@ -4,8 +4,10 @@ import "net/http"
 
 func (r *Router) NewRoute(method string, path string, handler http.HandlerFunc) *Route {
 	route := &Route{
+		method: method,
+		path: r.prefix + path,
 		pattern: method + " " + r.prefix + path,
-		handler: handler,
+		handler: r.NotFoundMiddleware(handler),
 	}	
 	r.AddRoute(route)
 	return route

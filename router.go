@@ -4,16 +4,17 @@ import (
 	"net/http"
 )
 
-var Routes []Route
-
 type Route struct {
 	name string
+	path string
+	method string
 	pattern string
 	handler http.HandlerFunc
 }
 
 type Router struct {
 	httpHandler *http.ServeMux
+	routes *[]Route
 	prefix string
 }
 
@@ -29,5 +30,5 @@ func (b *BagoetteClient) RegisterRoute(route *Route) {
 
 
 func (r *Router) AddRoute(route *Route) {
-	Routes = append(Routes, *route)
+	*r.routes = append(*r.routes, *route)
 }
