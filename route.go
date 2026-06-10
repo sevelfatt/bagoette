@@ -1,21 +1,22 @@
 package bagoette
 
-import "net/http"
-
 type Route struct {
 	name    string
 	path    string
 	method  string
 	pattern string
-	handler http.HandlerFunc
+	handlerFunc HandlerFunc
 }
 
-func (r *Router) NewRoute(method string, path string, handler http.HandlerFunc) *Route {
+func (r *Router) NewRoute(method string, path string, handler HandlerFunc) *Route {
+	fn := func(c *Context){
+		handler(c)
+	}
 	route := &Route{
 		method: method,
 		path: r.prefix + path,
 		pattern: method + " " + r.prefix + path,
-		handler: r.NotFoundMiddleware(handler),
+		handlerFunc: r.NotFoundMiddleware(fn),
 	}	
 	r.AddRoute(route)
 	return route

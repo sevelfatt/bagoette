@@ -12,6 +12,7 @@ type BagoetteClient struct {
 	httpHandler *http.ServeMux
 	routes *[]Route
 	router *Router // router will be used to route requests
+	context *Context
 }
 
 func NewClient() *BagoetteClient {
@@ -20,6 +21,7 @@ func NewClient() *BagoetteClient {
 		httpHandler: http.NewServeMux(),
 		routes: &[]Route{},
 		router: &Router{},
+		context: &Context{},
 		port: 8080,
 	}
 }
