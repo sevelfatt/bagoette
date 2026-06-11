@@ -18,7 +18,8 @@ func (b *BagoetteClient) registerRoute(route *Route) {
 	fn := func(w http.ResponseWriter, r *http.Request){
 		b.context.w = w
 		b.context.r = r
-		route.handlerFunc(b.context)
+		b.context.currentRoute = route
+		route.Handlers[0](b.context)
 	}
 
 	b.httpHandler.Handle(route.pattern, http.HandlerFunc(fn))

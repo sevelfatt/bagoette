@@ -1,76 +1,156 @@
 package bagoette
 
 import (
-	"net/http"
+	"errors"
+	"log"
 
 	"github.com/sevelfatt/bagoette/utils"
 )
 
-//Context struct: work as the container of the request and response
-type Context struct {
-	w http.ResponseWriter
-	r *http.Request
-
-	currentHandlerIndex int
-	handlers []HandlerFunc
-	data map[string]any
+func (c *Context) Check() error {
+	if c == nil {
+		log.Println("Warning: Context is nil")
+		return errors.New("Context is nil")
+	}
+	if c.currentRoute == nil {
+		log.Println("Warning: Current route is nil")
+		return errors.New("Current route is nil")
+	}
+	if c.w == nil {
+		log.Println("Warning: Response writer is nil")
+		return errors.New("Response writer is nil")
+	}
+	if c.r == nil {
+		log.Println("Warning: Request is nil")
+		return errors.New("Request is nil")
+	}
+	return nil
 }
 
-func (c *Context) Reset() {
+//Reset: reset the context
+func (c *Context) Reset() error {
+	err := c.Check()
+	if err != nil {
+		return err
+	}
 	c.currentHandlerIndex = 0
-	c.handlers = nil
 	c.data = nil
+	return nil
 }
-
-func (c *Context) Set(key string, value any) {
+//Set: set a value in the context data
+func (c *Context) Set(key string, value any) error {
+	err := c.Check()
+	if err != nil {
+		return err
+	}
 	if c.data == nil {
 		c.data = make(map[string]any)
 	}
 	c.data[key] = value
+	return nil
 }
 
-func (c *Context) Get(key string) any {
-	return c.data[key]
-}
-
-func (c *Context) Abort() {
-	c.currentHandlerIndex = len(c.handlers)
-}
-
-func (c *Context) Next() {
-	if c.currentHandlerIndex == len(c.handlers) {
-		return
+//Get: get a value from the context data
+func (c *Context) Get(key string) (any, error) {
+	err := c.Check()
+	if err != nil {
+		return nil, err
 	}
-	c.currentHandlerIndex++
-	c.handlers[c.currentHandlerIndex](c)
+	return c.data[key], nil
 }
 
+//Abort: abort the request
+func (c *Context) Abort() error {
+	err := c.Check()
+	if err != nil {
+		return err
+	}
+	c.currentHandlerIndex = len(c.currentRoute.Handlers)
+	return nil
+}
+
+//Next: call the next handler and reset the context after the last handler is called
+func (c *Context) Next() error {
+	err := c.Check()
+	if err != nil {
+		return err
+	}
+	if c.currentHandlerIndex == len(c.currentRoute.Handlers) - 1 {
+		//reset the context after the last handler is called
+		c.Reset()
+		return nil
+	}
+	//increment the handler index
+	c.currentHandlerIndex++
+	//call the next handler
+	c.currentRoute.Handlers[c.currentHandlerIndex](c)
+	return nil
+}
+
+//Bind: bind the request body to a struct
 func (c *Context) Bind(body any) error {
+	err := c.Check()
+	if err != nil {
+		return err
+	}
 	return utils.DecodeJSONFromRequestBody(c.r, body)
 }
 
-func (c *Context) Response(status int, data any) {
+//Response: respond with a JSON
+func (c *Context) Response(status int, data any) error {
+	err := c.Check()
+	if err != nil {
+		return err
+	}
 	utils.RespondJSON(c.w, status, data)
+	return nil
 }
 
-func (c *Context) Error(status int, message string) {
+//Error: respond with an error
+func (c *Context) Error(status int, message string) error {
+	err := c.Check()
+	if err != nil {
+		return err
+	}
 	utils.RespondJSON(c.w, status, map[string]string{
 		"error": message,
 	})
+	return nil
 }
 
-func (c *Context) Query(key string) string {
-	return c.r.URL.Query().Get(key)
+//Query: get a query parameter
+func (c *Context) Query(key string) (string, error) {
+	err := c.Check()
+	if err != nil {
+		return "", err
+	}
+	return c.r.URL.Query().Get(key), nil
 }
 
-func (c *Context) Header(key string) string {
-	return c.r.Header.Get(key)
+//Header: get a header
+func (c *Context) Header(key string) (string, error) {
+	err := c.Check()
+	if err != nil {
+		return "", err
+	}
+	return c.r.Header.Get(key), nil
 }
 
-func (c *Context) SetHeader(key string, value string) {
+//SetHeader: set a header
+func (c *Context) SetHeader(key string, value string) error {
+	err := c.Check()
+	if err != nil {
+		return err
+	}
 	c.w.Header().Set(key, value)
+	return nil
 }
 
-func (c *Context) Param(key string) string {
-	return c.r.PathValue(key)
+//Param: get a path parameter
+func (c *Context) Param(key string) (string, error) {
+	err := c.Check()
+	if err != nil {
+		return "", err
+	}
+	return c.r.PathValue(key), nil
 }

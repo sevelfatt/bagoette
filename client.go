@@ -4,17 +4,6 @@ import (
 	"net/http"
 )
 
-//Bagoette main struct: work as the core of the library
-//and provide all the features like router, middleware, context, etc
-type BagoetteClient struct {
-	port int
-	httpClient *http.Client
-	httpHandler *http.ServeMux
-	routes *[]Route
-	router *Router
-	context *Context
-}
-
 //NewClient: create a new BagoetteClient
 func NewClient() *BagoetteClient {
 	return &BagoetteClient{
