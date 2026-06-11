@@ -6,42 +6,32 @@ import (
 	"github.com/sevelfatt/bagoette/utils"
 )
 
-func (R *Router) ApplyErrorMiddlewares(next HandlerFunc) HandlerFunc {
-	return R.NotFoundMiddleware(R.MethodNotAllowedMiddleware(R.InternalServerErrorMiddleware(next)))
-}
 
-func (R *Router) NotFoundMiddleware(next HandlerFunc) HandlerFunc {
-	fn := func(c *Ctx) {
-		for _, route := range *R.routes {
+func (b *BagoetteClient) NotFoundMiddleware(c *Ctx) {
+		for _, route := range *b.routes {
 			if utils.MatchRoute(route.PathSegments, utils.GetPathSegment(c.r.URL.Path)) {
-				next(c)
+				c.Next()
 				return
 			}
 		}
 		c.Error(http.StatusNotFound, "Not Found")
-	}
-	return fn
 }
 
-func (R *Router) MethodNotAllowedMiddleware(next HandlerFunc) HandlerFunc {
-	fn := func(c *Ctx) {
-		for _, route := range *R.routes {
+func (b *BagoetteClient) MethodNotAllowedMiddleware(c *Ctx) {
+		for _, route := range *b.routes {
 			if utils.MatchRouteMethod(route.Method, c.r) {
-				next(c)
+				c.Next()
 				return
 			}
 		}
 		c.Error(http.StatusMethodNotAllowed, "Method Not Allowed")
-	}
-	return fn
+		return
 }
 
-func (R *Router) InternalServerErrorMiddleware(next HandlerFunc) HandlerFunc {
-	fn := func(c *Ctx) {
-		next(c)
-		if c.r.Method != http.MethodGet {
-			c.Error(http.StatusInternalServerError, "Internal Server Error")
-		}
+func (b *BagoetteClient) InternalServerErrorMiddleware(c *Ctx) {
+	c.Next()
+	if c.r.Method != http.MethodGet {
+		c.Error(http.StatusInternalServerError, "Internal Server Error")
+		return
 	}
-	return fn
 }

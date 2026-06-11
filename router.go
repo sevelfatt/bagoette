@@ -6,7 +6,7 @@ func (b *BagoetteClient) NewRouter() *Router {
 	return &Router{
 		httpHandler: b.httpHandler,
 		routes:      b.routes,
-		middlewares: []HandlerFunc{},
+		middlewares: []HandlerFunc{b.NotFoundMiddleware, b.MethodNotAllowedMiddleware, b.InternalServerErrorMiddleware},
 		prefix:      "",
 	}
 }
@@ -23,12 +23,14 @@ func (r *Router) Use(handlers ...HandlerFunc) *Router {
 }
 
 func (r *Router) NewRoute(method string, path string, handlers []HandlerFunc) *Route {
-	pathSegments := utils.GetPathSegment(path)
+	fullPath := r.prefix + path
+	
+	pathSegments := utils.GetPathSegment(fullPath)
 	paramKeys := utils.GetParamKeys(pathSegments)
 
 	route := &Route{
 		Method:   method,
-		Path:     r.prefix + path,
+		Path:     fullPath,
 		PathSegments: pathSegments,
 		ParamKeys: paramKeys,
 		Handlers: append(r.middlewares, handlers...),

@@ -3,7 +3,6 @@ package utils
 import (
 	"net/http"
 	"strings"
-
 )
 
 func MatchRoute(routePathSegments []string, requestPathSegments []string) bool {
