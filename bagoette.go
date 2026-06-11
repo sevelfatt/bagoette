@@ -6,8 +6,10 @@ import "net/http"
 //and provide all the features like router, middleware, context, etc
 type BagoetteClient struct {
 	port int
+
 	httpClient *http.Client
 	httpHandler *http.ServeMux
+	
 	routes *[]Route
 	router *Router
 	context *Context
