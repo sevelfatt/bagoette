@@ -25,7 +25,6 @@ func (b *BagoetteClient) MethodNotAllowedMiddleware(c *Ctx) {
 			}
 		}
 		c.Error(http.StatusMethodNotAllowed, "Method Not Allowed")
-		return
 }
 
 func (b *BagoetteClient) InternalServerErrorMiddleware(c *Ctx) {

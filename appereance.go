@@ -14,6 +14,21 @@ const (
 	White = "\033[37m"
 )
 
+var RequestStatusColours = map[int]string{
+	1: Blue,
+	2: Green,
+	3: Blue,
+	4: Yellow,
+	5: Red,
+}
+
+var methodColors = map[string]string{
+	"GET": Green,
+	"POST": Yellow,
+	"PUT": Blue,
+	"DELETE": Red,
+}
+
 var banner string = `
  ____                         _   _       
 | __ )  __ _  __ _  ___   ___| |_| |_ ___ 
@@ -34,13 +49,6 @@ func (b *BagoetteClient) ServeAppearance() {
 
 }
 
-var methodColors = map[string]string{
-	"GET": Green,
-	"POST": Yellow,
-	"PUT": Blue,
-	"DELETE": Red,
-}
-
 func (b *BagoetteClient) ShowRoutes() {
 	fmt.Println("Registered Routes:")
 	for _, route := range *b.routes {
@@ -50,14 +58,6 @@ func (b *BagoetteClient) ShowRoutes() {
 
 func Log(message string) {
 	logger.Println(message)
-}
-
-var RequestStatusColours = map[int]string{
-	1: Blue,
-	2: Green,
-	3: Blue,
-	4: Yellow,
-	5: Red,
 }
 
 func getRequestStatusColour(status int) string {
