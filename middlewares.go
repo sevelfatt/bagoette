@@ -1,6 +1,6 @@
 package bagoette
 
-func FirstHandlerMiddleware(c *Context) {
+func FirstHandlerMiddleware(c *Ctx) {
 	c.Reset()
 	c.Next()
 }

@@ -1,12 +1,13 @@
 package bagoette
 
+import "github.com/sevelfatt/bagoette/utils"
+
 func (b *BagoetteClient) NewRouter() *Router {
 	return &Router{
 		httpHandler: b.httpHandler,
-		routes: b.routes,
-		context: b.context,
-		middlewares: []HandlerFunc{FirstHandlerMiddleware},
-		prefix: "",
+		routes:      b.routes,
+		middlewares: []HandlerFunc{},
+		prefix:      "",
 	}
 }
 
@@ -22,12 +23,16 @@ func (r *Router) Use(handlers ...HandlerFunc) *Router {
 }
 
 func (r *Router) NewRoute(method string, path string, handlers []HandlerFunc) *Route {
+	pathSegments := utils.GetPathSegment(path)
+	paramKeys := utils.GetParamKeys(pathSegments)
+
 	route := &Route{
-		method: method,
-		path: r.prefix + path,
-		pattern: method + " " + r.prefix + path,
+		Method:   method,
+		Path:     r.prefix + path,
+		PathSegments: pathSegments,
+		ParamKeys: paramKeys,
 		Handlers: append(r.middlewares, handlers...),
-	}	
+	}
 	r.AddNewRouteToRouter(route)
 	return route
 }

@@ -11,9 +11,9 @@ func (R *Router) ApplyErrorMiddlewares(next HandlerFunc) HandlerFunc {
 }
 
 func (R *Router) NotFoundMiddleware(next HandlerFunc) HandlerFunc {
-	fn := func(c *Context) {
+	fn := func(c *Ctx) {
 		for _, route := range *R.routes {
-			if utils.MatchRoute(route.path, c.r.URL.Path) {
+			if utils.MatchRoute(route.PathSegments, utils.GetPathSegment(c.r.URL.Path)) {
 				next(c)
 				return
 			}
@@ -24,9 +24,9 @@ func (R *Router) NotFoundMiddleware(next HandlerFunc) HandlerFunc {
 }
 
 func (R *Router) MethodNotAllowedMiddleware(next HandlerFunc) HandlerFunc {
-	fn := func(c *Context) {
+	fn := func(c *Ctx) {
 		for _, route := range *R.routes {
-			if utils.MatchRoute(route.path, c.r.URL.Path) {
+			if utils.MatchRouteMethod(route.Method, c.r) {
 				next(c)
 				return
 			}
@@ -37,7 +37,7 @@ func (R *Router) MethodNotAllowedMiddleware(next HandlerFunc) HandlerFunc {
 }
 
 func (R *Router) InternalServerErrorMiddleware(next HandlerFunc) HandlerFunc {
-	fn := func(c *Context) {
+	fn := func(c *Ctx) {
 		next(c)
 		if c.r.Method != http.MethodGet {
 			c.Error(http.StatusInternalServerError, "Internal Server Error")

@@ -7,7 +7,14 @@ import (
 	"github.com/sevelfatt/bagoette/utils"
 )
 
-func (c *Context) Check() error {
+func NewContext() *Ctx {
+	return &Ctx{
+		currentHandlerIndex: 0,
+		data: make(map[string]any),
+	}
+}
+
+func (c *Ctx) Check() error {
 	if c == nil {
 		log.Println("Warning: Context is nil")
 		return errors.New("Context is nil")
@@ -28,7 +35,7 @@ func (c *Context) Check() error {
 }
 
 //Reset: reset the context
-func (c *Context) Reset() error {
+func (c *Ctx) Reset() error {
 	err := c.Check()
 	if err != nil {
 		return err
@@ -38,7 +45,7 @@ func (c *Context) Reset() error {
 	return nil
 }
 //Set: set a value in the context data
-func (c *Context) Set(key string, value any) error {
+func (c *Ctx) Set(key string, value any) error {
 	err := c.Check()
 	if err != nil {
 		return err
@@ -51,7 +58,7 @@ func (c *Context) Set(key string, value any) error {
 }
 
 //Get: get a value from the context data
-func (c *Context) Get(key string) (any, error) {
+func (c *Ctx) Get(key string) (any, error) {
 	err := c.Check()
 	if err != nil {
 		return nil, err
@@ -60,7 +67,7 @@ func (c *Context) Get(key string) (any, error) {
 }
 
 //Abort: abort the request
-func (c *Context) Abort() error {
+func (c *Ctx) Abort() error {
 	err := c.Check()
 	if err != nil {
 		return err
@@ -70,7 +77,7 @@ func (c *Context) Abort() error {
 }
 
 //Next: call the next handler and reset the context after the last handler is called
-func (c *Context) Next() error {
+func (c *Ctx) Next() error {
 	err := c.Check()
 	if err != nil {
 		return err
@@ -88,7 +95,7 @@ func (c *Context) Next() error {
 }
 
 //Bind: bind the request body to a struct
-func (c *Context) Bind(body any) error {
+func (c *Ctx) Bind(body any) error {
 	err := c.Check()
 	if err != nil {
 		return err
@@ -97,21 +104,23 @@ func (c *Context) Bind(body any) error {
 }
 
 //Response: respond with a JSON
-func (c *Context) Response(status int, data any) error {
+func (c *Ctx) Response(status int, data any) error {
 	err := c.Check()
 	if err != nil {
 		return err
 	}
+	requestLog(c.r.Method, c.r.URL.Path, status)
 	utils.RespondJSON(c.w, status, data)
 	return nil
 }
 
 //Error: respond with an error
-func (c *Context) Error(status int, message string) error {
+func (c *Ctx) Error(status int, message string) error {
 	err := c.Check()
 	if err != nil {
 		return err
 	}
+	requestLog(c.r.Method, c.r.URL.Path, status)
 	utils.RespondJSON(c.w, status, map[string]string{
 		"error": message,
 	})
@@ -119,7 +128,7 @@ func (c *Context) Error(status int, message string) error {
 }
 
 //Query: get a query parameter
-func (c *Context) Query(key string) (string, error) {
+func (c *Ctx) Query(key string) (string, error) {
 	err := c.Check()
 	if err != nil {
 		return "", err
@@ -128,7 +137,7 @@ func (c *Context) Query(key string) (string, error) {
 }
 
 //Header: get a header
-func (c *Context) Header(key string) (string, error) {
+func (c *Ctx) Header(key string) (string, error) {
 	err := c.Check()
 	if err != nil {
 		return "", err
@@ -137,7 +146,7 @@ func (c *Context) Header(key string) (string, error) {
 }
 
 //SetHeader: set a header
-func (c *Context) SetHeader(key string, value string) error {
+func (c *Ctx) SetHeader(key string, value string) error {
 	err := c.Check()
 	if err != nil {
 		return err
@@ -147,7 +156,7 @@ func (c *Context) SetHeader(key string, value string) error {
 }
 
 //Param: get a path parameter
-func (c *Context) Param(key string) (string, error) {
+func (c *Ctx) Param(key string) (string, error) {
 	err := c.Check()
 	if err != nil {
 		return "", err

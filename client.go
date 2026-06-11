@@ -2,6 +2,7 @@ package bagoette
 
 import (
 	"net/http"
+
 )
 
 //NewClient: create a new BagoetteClient
@@ -10,8 +11,6 @@ func NewClient() *BagoetteClient {
 		httpClient: http.DefaultClient,
 		httpHandler: http.NewServeMux(),
 		routes: &[]Route{},
-		router: &Router{},
-		context: &Context{},
 		port: 8080,
 	}
 }

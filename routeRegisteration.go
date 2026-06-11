@@ -6,17 +6,18 @@ import (
 
 func (b *BagoetteClient) registerAllRoutes() {
 	for _, route := range *b.routes {
-		go b.registerRoute(&route)
+		b.registerRoute(&route)
 	}
 }
 
 func (b *BagoetteClient) registerRoute(route *Route) {
 	fn := func(w http.ResponseWriter, r *http.Request){
-		b.context.w = w
-		b.context.r = r
-		b.context.currentRoute = route
-		route.Handlers[0](b.context)
+		context := NewContext()
+		context.w = w
+		context.r = r
+		context.currentRoute = route
+		route.Handlers[0](context)
 	}
 
-	b.httpHandler.Handle(route.pattern, http.HandlerFunc(fn))
+	b.httpHandler.Handle(route.Method + " " + route.Path, http.HandlerFunc(fn))
 }
