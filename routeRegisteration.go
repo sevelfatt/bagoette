@@ -11,7 +11,7 @@ func (b *BagoetteClient) registerAllRoutes() {
 }
 
 func (b *BagoetteClient) registerRoute(route *Route) {
-	fn := func(w http.ResponseWriter, r *http.Request){
+	fn := func(w http.ResponseWriter, r *http.Request) {
 		context := NewContext()
 		context.w = w
 		context.r = r
