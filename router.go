@@ -29,11 +29,11 @@ func (r *Router) NewRoute(method string, path string, handlers []HandlerFunc) *R
 	paramKeys := utils.GetParamKeys(pathSegments)
 
 	route := &Route{
-		Method:   method,
-		Path:     fullPath,
-		PathSegments: pathSegments,
-		ParamKeys: paramKeys,
-		Handlers: append(r.middlewares, handlers...),
+		method:   method,
+		path:     fullPath,
+		pathSegments: pathSegments,
+		paramKeys: paramKeys,
+		handlers: append(r.middlewares, handlers...),
 	}
 	r.AddNewRouteToRouter(route)
 	return route

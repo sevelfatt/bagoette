@@ -5,11 +5,16 @@ import (
 	"strconv"
 )
 
-func (b *BagoetteClient) Serve(port int) error {
-	b.SetPort(port)
+func (b *BagoetteClient) Serve(opts BagoetteOptions) error {
+	if opts.Port != 0  {
+		b.opts.Port = opts.Port
+	}
+	if opts.Host != "" {
+		b.opts.Host = opts.Host
+	}
 	b.registerAllRoutes()
 	b.ServeAppearance()
-	return http.ListenAndServe(":" + strconv.Itoa(b.port), b.httpHandler)
+	return http.ListenAndServe(b.opts.Host + ":" + strconv.Itoa(b.opts.Port), b.httpHandler)
 }
 
 func (b *BagoetteClient) Close() {

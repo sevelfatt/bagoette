@@ -23,11 +23,11 @@ func (c *Ctx) Check() error {
 		log.Println("Warning: Current route is nil")
 		return errors.New("Current route is nil")
 	}
-	if c.w == nil {
+	if c.writer == nil {
 		log.Println("Warning: Response writer is nil")
 		return errors.New("Response writer is nil")
 	}
-	if c.r == nil {
+	if c.request == nil {
 		log.Println("Warning: Request is nil")
 		return errors.New("Request is nil")
 	}
@@ -72,7 +72,7 @@ func (c *Ctx) Abort() error {
 	if err != nil {
 		return err
 	}
-	c.currentHandlerIndex = len(c.currentRoute.Handlers)
+	c.currentHandlerIndex = len(c.currentRoute.handlers)
 	return nil
 }
 
@@ -82,7 +82,7 @@ func (c *Ctx) Next() error {
 	if err != nil {
 		return err
 	}
-	if c.currentHandlerIndex == len(c.currentRoute.Handlers) - 1 {
+	if c.currentHandlerIndex == len(c.currentRoute.handlers) - 1 {
 		//reset the context after the last handler is called
 		c.Reset()
 		return nil
@@ -90,7 +90,7 @@ func (c *Ctx) Next() error {
 	//increment the handler index
 	c.currentHandlerIndex++
 	//call the next handler
-	c.currentRoute.Handlers[c.currentHandlerIndex](c)
+	c.currentRoute.handlers[c.currentHandlerIndex](c)
 	return nil
 }
 
@@ -100,7 +100,7 @@ func (c *Ctx) Bind(body any) error {
 	if err != nil {
 		return err
 	}
-	return utils.DecodeJSONFromRequestBody(c.r, body)
+	return utils.DecodeJSONFromRequestBody(c.request, body)
 }
 
 //Response: respond with a JSON
@@ -109,8 +109,8 @@ func (c *Ctx) Response(status int, data any) error {
 	if err != nil {
 		return err
 	}
-	requestLog(c.r.Method, c.r.URL.Path, status)
-	utils.RespondJSON(c.w, status, data)
+	requestLog(c.request.Method, c.request.URL.Path, status)
+	utils.RespondJSON(c.writer, status, data)
 	return nil
 }
 
@@ -120,8 +120,8 @@ func (c *Ctx) Error(status int, message string) error {
 	if err != nil {
 		return err
 	}
-	requestLog(c.r.Method, c.r.URL.Path, status)
-	utils.RespondJSON(c.w, status, map[string]string{
+	requestLog(c.request.Method, c.request.URL.Path, status)
+	utils.RespondJSON(c.writer, status, map[string]string{
 		"error": message,
 	})
 	return nil
@@ -133,7 +133,7 @@ func (c *Ctx) Query(key string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return c.r.URL.Query().Get(key), nil
+	return c.request.URL.Query().Get(key), nil
 }
 
 //Header: get a header
@@ -142,7 +142,7 @@ func (c *Ctx) Header(key string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return c.r.Header.Get(key), nil
+	return c.request.Header.Get(key), nil
 }
 
 //SetHeader: set a header
@@ -151,7 +151,7 @@ func (c *Ctx) SetHeader(key string, value string) error {
 	if err != nil {
 		return err
 	}
-	c.w.Header().Set(key, value)
+	c.writer.Header().Set(key, value)
 	return nil
 }
 
@@ -161,5 +161,5 @@ func (c *Ctx) Param(key string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return c.r.PathValue(key), nil
+	return c.request.PathValue(key), nil
 }

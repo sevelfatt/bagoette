@@ -11,18 +11,11 @@ func NewClient() *BagoetteClient {
 		httpClient: http.DefaultClient,
 		httpHandler: http.NewServeMux(),
 		routes: &[]Route{},
-		port: 8080,
+		opts: &BagoetteOptions{
+			Port: 8080,
+			Host: "localhost",
+		},
 	}
-}
-
-//SetPort: set the port of the server
-func (b *BagoetteClient) SetPort(port int) {
-	b.port = port
-}
-
-//GetPort: get the port of the server
-func (b *BagoetteClient) GetPort() int {
-	return b.port
 }
 
 

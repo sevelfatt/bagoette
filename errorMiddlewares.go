@@ -9,7 +9,7 @@ import (
 
 func (b *BagoetteClient) NotFoundMiddleware(c *Ctx) {
 		for _, route := range *b.routes {
-			if utils.MatchRoute(route.PathSegments, utils.GetPathSegment(c.r.URL.Path)) {
+			if utils.MatchRoute(route.pathSegments, utils.GetPathSegment(c.request.URL.Path)) {
 				c.Next()
 				return
 			}
@@ -19,7 +19,7 @@ func (b *BagoetteClient) NotFoundMiddleware(c *Ctx) {
 
 func (b *BagoetteClient) MethodNotAllowedMiddleware(c *Ctx) {
 		for _, route := range *b.routes {
-			if utils.MatchRouteMethod(route.Method, c.r) {
+			if utils.MatchRouteMethod(route.method, c.request) {
 				c.Next()
 				return
 			}
@@ -29,7 +29,7 @@ func (b *BagoetteClient) MethodNotAllowedMiddleware(c *Ctx) {
 
 func (b *BagoetteClient) InternalServerErrorMiddleware(c *Ctx) {
 	c.Next()
-	if c.r.Method != http.MethodGet {
+	if c.request.Method != http.MethodGet {
 		c.Error(http.StatusInternalServerError, "Internal Server Error")
 		return
 	}

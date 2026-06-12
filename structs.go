@@ -7,7 +7,7 @@ import (
 //Bagoette main struct: work as the core of the library
 //and provide all the features like router, middleware, context, etc
 type BagoetteClient struct {
-	port int
+	opts *BagoetteOptions
 
 	httpClient *http.Client
 	httpHandler *http.ServeMux
@@ -15,10 +15,16 @@ type BagoetteClient struct {
 	routes *[]Route
 }
 
+type BagoetteOptions struct {
+	Port int
+	Host string
+	
+}
+
 //Context struct: work as the container of the request and response
 type Ctx struct {
-	w http.ResponseWriter
-	r *http.Request
+	writer http.ResponseWriter
+	request *http.Request
 
 	currentHandlerIndex int
 	currentRoute *Route
@@ -39,11 +45,11 @@ type Router struct {
 
 //Route struct: Define individual route
 type Route struct {
-	Path    string
-	Method  string
+	path    string
+	method  string
 
-	PathSegments []string
-	ParamKeys []string
+	pathSegments []string
+	paramKeys []string
 
-	Handlers []HandlerFunc
+	handlers []HandlerFunc
 }
