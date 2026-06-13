@@ -186,7 +186,7 @@ func (c *Ctx) Param(key string) (string, error) {
 	return c.request.PathValue(key), nil
 }
 
-func (c *Ctx) FormFile(key string) (*multipart.FileHeader, error){
+func (c *Ctx) File(key string) (*multipart.FileHeader, error){
 	err := c.Check()
 	if err != nil {
 		return nil, err
@@ -197,4 +197,22 @@ func (c *Ctx) FormFile(key string) (*multipart.FileHeader, error){
 		return nil, err
 	}
 	return handler, nil
+}
+
+func (c *Ctx) SaveFile(key string, path string) error {
+	err := c.Check()
+	if err != nil {
+		return err
+	}
+	
+	file, err := c.File(key)
+	if err != nil {
+		return err
+	}
+
+	err = utils.SaveFile(file, path)
+	if err != nil {
+		return err
+	}
+	return nil
 }
