@@ -42,7 +42,7 @@ func (b *BagoetteClient) ServeAppearance() {
 	fmt.Println(Red + banner + Reset)
 	fmt.Println(Blue + repo + Reset)
 	fmt.Println(Red + "\nVersion: " + Reset, version)
-	fmt.Println(Red + "By: " + Reset, author+ "\n")
+	fmt.Println(Red + "By: " + Reset, author)
 
 	b.ShowRoutes()
 	fmt.Println(Red + "\nServer is running on port", b.Opts.Port, Reset)
@@ -50,7 +50,7 @@ func (b *BagoetteClient) ServeAppearance() {
 }
 
 func (b *BagoetteClient) ShowRoutes() {
-	fmt.Println("Registered Routes:")
+	fmt.Println("\nRegistered Routes:")
 	for _, route := range *b.routes {
 		fmt.Println("- ["+methodColors[route.method]+route.method+Reset+"] "+route.path)
 	}
