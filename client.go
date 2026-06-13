@@ -2,7 +2,8 @@ package bagoette
 
 import (
 	"net/http"
-
+	"os"
+	"strconv"
 )
 
 //NewClient: create a new BagoetteClient
@@ -11,15 +12,31 @@ func NewClient() *BagoetteClient {
 		httpServer: &http.Server{},
 		httpHandler: http.NewServeMux(),
 		routes: &[]Route{},
-		opts: &BagoetteOptions{
-			Port: 8080,
-			Host: "localhost",
+		Opts: &BagoetteOptions{
+			Port: getDefaultPort(),
 		},
 	}
 }
 
-func (b *BagoetteClient) GetOpts() BagoetteOptions {
-	return *b.opts
+//Port: set the port of the server
+func (b *BagoetteClient) Port(port int) *BagoetteClient {
+	b.Opts.Port = port
+	return b
+}
+
+//getDefaultPort: get the default port from the environment variable PORT
+func getDefaultPort() int {
+	port := os.Getenv("PORT")
+	if port == "" {
+		logger.Println("Warning: No port in environment variable, using default port 8080")
+		return 8080
+	}
+	parsedPort, err := strconv.Atoi(port)
+	if err != nil {
+		logger.Println("Warning: Invalid port in environment variable, using default port 8080")
+		return 8080
+	}
+	return parsedPort
 }
 
 func (b *BagoetteClient) GetRoutes() []Route {

@@ -7,7 +7,7 @@ import (
 //Bagoette main struct: work as the core of the library
 //and provide all the features like router, middleware, context, etc
 type BagoetteClient struct {
-	opts *BagoetteOptions
+	Opts *BagoetteOptions
 
 	httpServer *http.Server
 	httpHandler *http.ServeMux
@@ -17,8 +17,6 @@ type BagoetteClient struct {
 
 type BagoetteOptions struct {
 	Port int
-	Host string
-	
 }
 
 //Context struct: work as the container of the request and response

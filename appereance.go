@@ -45,7 +45,7 @@ func (b *BagoetteClient) ServeAppearance() {
 	fmt.Println(Red + "By: " + Reset, author+ "\n")
 
 	b.ShowRoutes()
-	fmt.Println(Red + "\nServer is running on port", b.opts.Port, Reset)
+	fmt.Println(Red + "\nServer is running on port", b.Opts.Port, Reset)
 
 }
 
