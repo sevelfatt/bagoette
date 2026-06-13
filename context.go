@@ -3,13 +3,35 @@ package bagoette
 import (
 	"errors"
 	"log"
+	"mime/multipart"
+	"net/http"
 
 	"github.com/sevelfatt/bagoette/utils"
 )
 
-func NewContext() *Ctx {
+//Context struct: work as the container of the request and response
+type Ctx struct {
+	opts *Options
+
+	writer http.ResponseWriter
+	request *http.Request
+
+	currentHandlerIndex int
+	currentRoute *Route
+
+	data map[string]any
+}
+
+func NewContext(opts *Options, writer http.ResponseWriter, request *http.Request,route *Route) *Ctx {
 	return &Ctx{
+		opts: opts,
+
+		writer: writer,
+		request: request,
+
 		currentHandlerIndex: 0,
+		currentRoute: route,
+
 		data: make(map[string]any),
 	}
 }
@@ -162,4 +184,17 @@ func (c *Ctx) Param(key string) (string, error) {
 		return "", err
 	}
 	return c.request.PathValue(key), nil
+}
+
+func (c *Ctx) FormFile(key string) (*multipart.FileHeader, error){
+	err := c.Check()
+	if err != nil {
+		return nil, err
+	}
+
+	_, handler, err :=  c.request.FormFile(key)
+	if err != nil {
+		return nil, err
+	}
+	return handler, nil
 }

@@ -6,21 +6,36 @@ import (
 	"strconv"
 )
 
+//Bagoette main struct: work as the core of the library
+//and provide all the features like router, middleware, context, etc
+type BagoetteClient struct {
+	Opts *Options
+
+	httpServer *http.Server
+	httpHandler *http.ServeMux
+
+	routes *[]Route
+}
+
 //NewClient: create a new BagoetteClient
 func NewClient() *BagoetteClient {
 	return &BagoetteClient{
 		httpServer: &http.Server{},
 		httpHandler: http.NewServeMux(),
 		routes: &[]Route{},
-		Opts: &BagoetteOptions{
-			Port: getDefaultPort(),
-		},
+		Opts: NewOptions(),
 	}
 }
 
 //Port: set the port of the server
 func (b *BagoetteClient) Port(port int) *BagoetteClient {
 	b.Opts.Port = port
+	return b
+}
+
+//MaxUploadSize: set the max upload size of the server
+func (b *BagoetteClient) MaxUploadSize(size int64) *BagoetteClient {
+	b.Opts.MaxUploadSize = size
 	return b
 }
 

@@ -1,28 +1,47 @@
 package bagoette
 
-import "github.com/sevelfatt/bagoette/utils"
+import (
+	"github.com/sevelfatt/bagoette/utils"
+)
 
-func (b *BagoetteClient) NewRouter() *Router {
-	return &Router{
-		httpHandler: b.httpHandler,
+//Router struct: work as the router of the server
+type RouteGroup struct {
+	routes *[]Route
+	middlewares []HandlerFunc
+	prefix string
+}
+
+//Route struct: Define individual route
+type Route struct {
+	path    string
+	method  string
+
+	pathSegments []string
+	paramKeys []string
+
+	handlers []HandlerFunc
+}
+
+func (b *BagoetteClient) NewRouter() *RouteGroup {
+	return &RouteGroup{
 		routes:      b.routes,
 		middlewares: []HandlerFunc{b.NotFoundMiddleware, b.MethodNotAllowedMiddleware, b.InternalServerErrorMiddleware},
 		prefix:      "",
 	}
 }
 
-func (r *Router) Group(prefix string) *Router {
+func (r *RouteGroup) Group(prefix string) *RouteGroup {
 	newRouter := *r
 	newRouter.prefix = r.prefix + prefix
 	return &newRouter
 }
 
-func (r *Router) Use(handlers ...HandlerFunc) *Router {
+func (r *RouteGroup) Use(handlers ...HandlerFunc) *RouteGroup {
 	r.middlewares = append(r.middlewares, handlers...)
 	return r
 }
 
-func (r *Router) NewRoute(method string, path string, handlers []HandlerFunc) *Route {
+func (r *RouteGroup) NewRoute(method string, path string, handlers []HandlerFunc) {
 	fullPath := r.prefix + path
 	
 	pathSegments := utils.GetPathSegment(fullPath)
@@ -35,10 +54,9 @@ func (r *Router) NewRoute(method string, path string, handlers []HandlerFunc) *R
 		paramKeys: paramKeys,
 		handlers: append(r.middlewares, handlers...),
 	}
-	r.AddNewRouteToRouter(route)
-	return route
+	r.AddNewRouteToBagoetteClient(route)
 }
 
-func (r *Router) AddNewRouteToRouter(route *Route) {
+func (r *RouteGroup) AddNewRouteToBagoetteClient(route *Route) {
 	*r.routes = append(*r.routes, *route)
 }
