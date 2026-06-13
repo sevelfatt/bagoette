@@ -1,7 +1,6 @@
 package bagoette
 
 import (
-	"net/http"
 	"strconv"
 )
 
@@ -14,9 +13,13 @@ func (b *BagoetteClient) Serve(opts BagoetteOptions) error {
 	}
 	b.registerAllRoutes()
 	b.ServeAppearance()
-	return http.ListenAndServe(b.opts.Host + ":" + strconv.Itoa(b.opts.Port), b.httpHandler)
+
+	b.httpServer.Handler = b.httpHandler
+	b.httpServer.Addr = b.opts.Host + ":" + strconv.Itoa(b.opts.Port)
+
+	return b.httpServer.ListenAndServe()
 }
 
-func (b *BagoetteClient) Close() {
-	b.httpClient.CloseIdleConnections()
+func (b *BagoetteClient) Close() error {
+	return b.httpServer.Close()
 }

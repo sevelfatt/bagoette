@@ -9,7 +9,7 @@ import (
 type BagoetteClient struct {
 	opts *BagoetteOptions
 
-	httpClient *http.Client
+	httpServer *http.Server
 	httpHandler *http.ServeMux
 
 	routes *[]Route
