@@ -125,14 +125,45 @@ func (c *Ctx) Bind(body any) error {
 	return utils.DecodeJSONFromRequestBody(c.request, body)
 }
 
-//Response: respond with a JSON
-func (c *Ctx) Response(status int, data any) error {
+//Responsd: respond with a JSON
+func (c *Ctx) Respond(status int, data any) error {
 	err := c.Check()
+	if err != nil {
+		return nil
+	}
+	err = utils.RespondJSON(c.writer, status, data)
 	if err != nil {
 		return err
 	}
 	requestLog(c.request.Method, c.request.URL.Path, status)
-	utils.RespondJSON(c.writer, status, data)
+	return nil
+}
+
+//RespondFile: Respond with a file
+func (c *Ctx) RespondFile(path string) error {
+	err := c.Check()
+	if err != nil {
+		return err
+	}
+	err = utils.DisplayFile(c.writer, c.request, path)
+	if err != nil {
+		return err
+	}
+	requestLog(c.request.Method, c.request.URL.Path, 200)
+	return nil
+}
+
+//DownloadFile: Download a file
+func (c *Ctx) DownloadFile(path string) error {
+	err := c.Check()
+	if err != nil {
+		return err
+	}
+	err = utils.DownloadFile(c.writer, c.request, path)
+	if err != nil {
+		return err
+	}
+	requestLog(c.request.Method, c.request.URL.Path, 200)
 	return nil
 }
 
@@ -143,10 +174,9 @@ func (c *Ctx) Error(status int, message string) error {
 		return err
 	}
 	requestLog(c.request.Method, c.request.URL.Path, status)
-	utils.RespondJSON(c.writer, status, map[string]string{
+	return utils.RespondJSON(c.writer, status, map[string]string{
 		"error": message,
 	})
-	return nil
 }
 
 //Query: get a query parameter
@@ -186,33 +216,51 @@ func (c *Ctx) Param(key string) (string, error) {
 	return c.request.PathValue(key), nil
 }
 
-func (c *Ctx) File(key string) (*multipart.FileHeader, error){
+func (c *Ctx) GetFiles(key string) ([]*multipart.FileHeader, error){
 	err := c.Check()
 	if err != nil {
 		return nil, err
 	}
 
-	_, handler, err :=  c.request.FormFile(key)
+	maxUploadSize := c.opts.MaxUploadSize
+
+	err = c.request.ParseMultipartForm(maxUploadSize)
 	if err != nil {
 		return nil, err
 	}
-	return handler, nil
+
+	files := c.request.MultipartForm.File[key]
+	if files == nil {
+		logger.Println(Yellow + "file with key " + key + " does not exist in the request" + Reset)
+	}
+
+	return files, nil
 }
 
-func (c *Ctx) SaveFile(key string, path string) error {
+func (c *Ctx) SaveFile(file *multipart.FileHeader, path string) error {
+	err := c.Check()
+	if err != nil {
+		return err
+	}
+	return utils.SaveFile(file, path)
+}
+
+func (c *Ctx) GetAndSaveFiles(key string, path string) error {
 	err := c.Check()
 	if err != nil {
 		return err
 	}
 	
-	file, err := c.File(key)
+	files, err := c.GetFiles(key)
 	if err != nil {
 		return err
 	}
 
-	err = utils.SaveFile(file, path)
-	if err != nil {
-		return err
+	for _, file := range files {
+		err = c.SaveFile(file, path)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

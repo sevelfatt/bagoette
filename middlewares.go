@@ -7,11 +7,6 @@ import (
 	"github.com/sevelfatt/bagoette/utils"
 )
 
-func FirstHandlerMiddleware(c *Ctx) {
-	c.Reset()
-	c.Next()
-}
-
 func (b *BagoetteClient) NotFoundMiddleware(c *Ctx) {
 	for _, route := range *b.routes {
 		if utils.MatchRoute(route.pathSegments, utils.GetPathSegment(c.request.URL.Path)) {
@@ -24,7 +19,7 @@ func (b *BagoetteClient) NotFoundMiddleware(c *Ctx) {
 
 func (b *BagoetteClient) MethodNotAllowedMiddleware(c *Ctx) {
 	for _, route := range *b.routes {
-		if utils.MatchRouteMethod(route.method, c.request) {
+		if utils.MatchRoute(route.pathSegments, utils.GetPathSegment(c.request.URL.Path)) && utils.MatchRouteMethod(route.method, c.request) {
 			c.Next()
 			return
 		}
