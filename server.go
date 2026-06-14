@@ -5,7 +5,10 @@ import (
 )
 
 func (b *BagoetteClient) Serve() error {
-	b.registerAllRoutes()
+	err := b.registerAllRoutes()
+	if err != nil {
+		return err
+	}
 	b.ServeAppearance()
 
 	b.httpServer.Handler = b.httpHandler

@@ -1,6 +1,8 @@
 package bagoette
 
 import (
+	"errors"
+
 	"github.com/sevelfatt/bagoette/utils"
 )
 
@@ -22,6 +24,25 @@ type Route struct {
 	handlers []HandlerFunc
 }
 
+func (r *Route) Check() error {
+	if r == nil {
+		return errors.New("Can't add nil route")
+	}
+	if r.handlers == nil {
+		return errors.New("Can't add route with no handlers")
+	}
+	if r.method == "" {
+		return errors.New("Can't add route with no method")
+	}
+	if r.path == "" {
+		return errors.New("Can't add route with no path")
+	}
+	if r.pathSegments == nil {
+		return errors.New("Can't add route with no path segments")
+	}
+	return nil
+}
+
 func (b *BagoetteClient) NewRouter() *RouteGroup {
 	return &RouteGroup{
 		routes:      b.routes,
@@ -41,7 +62,7 @@ func (r *RouteGroup) Use(handlers ...HandlerFunc) *RouteGroup {
 	return r
 }
 
-func (r *RouteGroup) NewRoute(method string, path string, handlers []HandlerFunc) {
+func (r *RouteGroup) NewRoute(method string, path string, handlers []HandlerFunc) error {
 	fullPath := r.prefix + path
 	
 	pathSegments := utils.GetPathSegment(fullPath)
@@ -54,9 +75,15 @@ func (r *RouteGroup) NewRoute(method string, path string, handlers []HandlerFunc
 		paramKeys: paramKeys,
 		handlers: append(r.middlewares, handlers...),
 	}
-	r.AddNewRouteToBagoetteClient(route)
+	return r.AddNewRouteToBagoetteClient(route)
 }
 
-func (r *RouteGroup) AddNewRouteToBagoetteClient(route *Route) {
+func (r *RouteGroup) AddNewRouteToBagoetteClient(route *Route) error {
+	err := route.Check()
+	if err != nil {
+		logger.Println("Error adding route:", err)
+		return err
+	}
 	*r.routes = append(*r.routes, *route)
+	return nil
 }

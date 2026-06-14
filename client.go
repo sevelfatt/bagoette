@@ -1,9 +1,8 @@
 package bagoette
 
 import (
+	"errors"
 	"net/http"
-	"os"
-	"strconv"
 )
 
 //Bagoette main struct: work as the core of the library
@@ -29,29 +28,22 @@ func NewClient() *BagoetteClient {
 
 //Port: set the port of the server
 func (b *BagoetteClient) Port(port int) *BagoetteClient {
+	if port < 0 || port > 65535 {
+		logger.Println("Error: Invalid port, using default port 8080")
+		return b
+		
+	}
 	b.Opts.Port = port
 	return b
 }
 
 //MaxUploadSize: set the max upload size of the server
-func (b *BagoetteClient) MaxUploadSize(size int64) *BagoetteClient {
+func (b *BagoetteClient) MaxUploadSize(size int64) (*BagoetteClient, error) {
+	if size < 0 {
+		return nil, errors.New("Invalid max upload size")
+	}
 	b.Opts.MaxUploadSize = size
-	return b
-}
-
-//getDefaultPort: get the default port from the environment variable PORT
-func getDefaultPort() int {
-	port := os.Getenv("PORT")
-	if port == "" {
-		logger.Println("Warning: No port in environment variable, using default port 8080")
-		return 8080
-	}
-	parsedPort, err := strconv.Atoi(port)
-	if err != nil {
-		logger.Println("Warning: Invalid port in environment variable, using default port 8080")
-		return 8080
-	}
-	return parsedPort
+	return b, nil
 }
 
 func (b *BagoetteClient) GetRoutes() []Route {
