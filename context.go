@@ -173,13 +173,16 @@ func (c *Ctx) Error(status int, message string) error {
 	if err != nil {
 		return err
 	}
+	http.Error(c.writer, message, status)
 	requestLog(c.request.Method, c.request.URL.Path, status)
-	return utils.RespondJSON(c.writer, status, map[string]string{
-		"error": message,
-	})
+
+	return nil
 }
 
-//Query: get a query parameter
+//Query: get a query parameter by the key of query
+//example: /users?name=john&age=20
+//c.Query("name") will return "john"
+//c.Query("age") will return "20"
 func (c *Ctx) Query(key string) (string, error) {
 	err := c.Check()
 	if err != nil {
@@ -189,6 +192,7 @@ func (c *Ctx) Query(key string) (string, error) {
 }
 
 //Header: get a header
+//example: c.Header("Content-Type") will return "application/json"
 func (c *Ctx) Header(key string) (string, error) {
 	err := c.Check()
 	if err != nil {
@@ -198,6 +202,7 @@ func (c *Ctx) Header(key string) (string, error) {
 }
 
 //SetHeader: set a header
+//example: c.SetHeader("Content-Type", "application/json")
 func (c *Ctx) SetHeader(key string, value string) error {
 	err := c.Check()
 	if err != nil {
@@ -208,6 +213,8 @@ func (c *Ctx) SetHeader(key string, value string) error {
 }
 
 //Param: get a path parameter
+//example: /users/:id
+//c.Param("id") will return the id of the user
 func (c *Ctx) Param(key string) (string, error) {
 	err := c.Check()
 	if err != nil {
@@ -216,6 +223,8 @@ func (c *Ctx) Param(key string) (string, error) {
 	return c.request.PathValue(key), nil
 }
 
+//GetFiles: get files from the request
+//example: c.GetFiles("myFiles") will return files with key "myFiles"
 func (c *Ctx) GetFiles(key string) ([]*multipart.FileHeader, error){
 	err := c.Check()
 	if err != nil {
@@ -237,6 +246,8 @@ func (c *Ctx) GetFiles(key string) ([]*multipart.FileHeader, error){
 	return files, nil
 }
 
+//SaveFile: save a file
+//example: c.SaveFile(file, "/path/to/save") will save the file to the given path
 func (c *Ctx) SaveFile(file *multipart.FileHeader, path string) error {
 	err := c.Check()
 	if err != nil {
@@ -245,6 +256,8 @@ func (c *Ctx) SaveFile(file *multipart.FileHeader, path string) error {
 	return utils.SaveFile(file, path)
 }
 
+//GetAndSaveFiles: get files from the request and save them by calling Getfiles and then save them directly using SaveFile
+//example: c.GetAndSaveFiles("myFiles", "/path/to/save") will get files with key "myFiles" and save them to "/path/to/save"
 func (c *Ctx) GetAndSaveFiles(key string, path string) error {
 	err := c.Check()
 	if err != nil {
