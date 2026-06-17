@@ -240,7 +240,7 @@ func (c *Ctx) GetFiles(key string) ([]*multipart.FileHeader, error){
 
 	files := c.request.MultipartForm.File[key]
 	if files == nil {
-		logger.Println(Yellow + "file with key " + key + " does not exist in the request" + Reset)
+		Logger.Println(Yellow + "file with key " + key + " does not exist in the request" + Reset)
 	}
 
 	return files, nil

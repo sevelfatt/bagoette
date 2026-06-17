@@ -29,7 +29,7 @@ func NewClient() *BagoetteClient {
 //Port: set the port of the server
 func (b *BagoetteClient) Port(port int) *BagoetteClient {
 	if port < 0 || port > 65535 {
-		logger.Println("Error: Invalid port, using default port 8080")
+		Logger.Println("Error: Invalid port, using default port 8080")
 		return b
 		
 	}

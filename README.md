@@ -14,4 +14,100 @@ just give it a try dawg 🥖
 go get github.com/sevelfatt/bagoette
 ```
 
-hold on gng ✌️, i just started this project
+### quick example
+```go
+package main
+
+import "github.com/sevelfatt/bagoette"
+
+func main() {
+	b := bagoette.NewClient() // create new client
+	r := b.NewRouter() // create new router
+
+	r.Get("/ping", func(c *bagoette.Ctx){
+		c.Respond(200, "pong")
+	}) // open new route with GET method on /ping path
+
+	b.Serve() // start the server
+}
+```
+
+### use middleware
+```go
+package main
+
+import (
+	"github.com/sevelfatt/bagoette"
+)
+
+func main() {
+	b := bagoette.NewClient()
+	r := b.NewRouter()
+
+	r.Get("/ping", loggerMiddleware, pong) // you can add more middleware like this
+
+	b.Serve()
+}
+
+func loggerMiddleware(c *bagoette.Ctx) {
+	bagoette.Logger.Println("Request: " + c.request.Method + " " + c.request.URL.Path)
+	c.Next()
+}
+
+func pong(c *bagoette.Ctx) {
+	c.Respond(200, "pong")
+}
+```
+
+### use router group
+```go
+package main
+
+import "github.com/sevelfatt/bagoette"
+
+func main() {
+	b := bagoette.NewClient()
+	r := b.NewRouter()
+
+	userRouter := r.Group("/users") //you can wrap some routes with same prefix like this
+	userRouter.Get("/ping", pong) //so the path will be /users/ping
+
+	b.Serve()
+}
+
+func pong(c *bagoette.Ctx) {
+	c.Respond(200, "pong")
+}
+```
+
+### use middleware in router group
+```go
+package main
+
+import (
+	"github.com/sevelfatt/bagoette"
+)
+
+func main() {
+	b := bagoette.NewClient()
+	r := b.NewRouter()
+
+	userRouter := r.Group("/users") 
+    userRouter.Use(loggerMiddleware) // you can add more middleware like this
+
+	userRouter.Get("/ping", pong)
+
+	b.Serve()
+}
+
+func loggerMiddleware(c *bagoette.Ctx) {
+	bagoette.Logger.Println("Request: " + c.request.Method + " " + c.request.URL.Path)
+	c.Next()
+}
+
+func pong(c *bagoette.Ctx) {
+	c.Respond(200, "pong")
+}
+```
+
+

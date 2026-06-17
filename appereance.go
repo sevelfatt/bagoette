@@ -57,7 +57,7 @@ func (b *BagoetteClient) ShowRoutes() {
 }
 
 func Log(message string) {
-	logger.Println(message)
+	Logger.Println(message)
 }
 
 func getRequestStatusColour(status int) string {
@@ -65,5 +65,5 @@ func getRequestStatusColour(status int) string {
 }
 
 func requestLog(method string, path string, status int) {
-	logger.Println(methodColors[method] + method + Reset + " " + path + " " + getRequestStatusColour(status) + strconv.Itoa(status) + Reset)
+	Logger.Println(methodColors[method] + method + Reset + " " + path + " " + getRequestStatusColour(status) + strconv.Itoa(status) + Reset)
 }

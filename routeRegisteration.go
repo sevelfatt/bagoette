@@ -17,7 +17,7 @@ func (b *BagoetteClient) registerAllRoutes() error {
 func (b *BagoetteClient) registerRoute(route *Route) error {
 	err := route.Check()
 	if err != nil {
-		logger.Println("Error registering route:", err)
+		Logger.Println("Error registering route:", err)
 		return err
 	}
 	fn := func(w http.ResponseWriter, r *http.Request){

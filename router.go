@@ -81,7 +81,7 @@ func (r *RouteGroup) NewRoute(method string, path string, handlers []HandlerFunc
 func (r *RouteGroup) AddNewRouteToBagoetteClient(route *Route) error {
 	err := route.Check()
 	if err != nil {
-		logger.Println("Error adding route:", err)
+		Logger.Println("Error adding route:", err)
 		return err
 	}
 	*r.routes = append(*r.routes, *route)

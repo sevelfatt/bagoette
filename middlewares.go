@@ -31,7 +31,7 @@ func (b *BagoetteClient) InternalServerErrorMiddleware(c *Ctx) {
 	defer func() {
 		if err := recover(); err != nil {
 			// Log the panic with a stack trace
-			logger.Println("panic recovered",
+			Logger.Println("panic recovered",
 				"error", err,
 				"stack", string(debug.Stack()),
 				"path", c.request.URL.Path,

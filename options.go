@@ -21,16 +21,16 @@ func NewOptions() *Options {
 func getDefaultPort() int {
 	port := os.Getenv("PORT")
 	if port == "" {
-		logger.Println("Warning: No port in environment variable, using default port 8080")
+		Logger.Println("Warning: No port in environment variable, using default port 8080")
 		return 8080
 	}
 	parsedPort, err := strconv.Atoi(port)
 	if parsedPort < 0 || parsedPort > 65535 {
-		logger.Printf("Warning: Invalid port %d in environment variable, using default port 8080", parsedPort)
+		Logger.Printf("Warning: Invalid port %d in environment variable, using default port 8080", parsedPort)
 		return 8080
 	}
 	if err != nil {
-		logger.Printf("Warning: Invalid port %s in environment variable, using default port 8080", port)
+		Logger.Printf("Warning: Invalid port %s in environment variable, using default port 8080", port)
 		return 8080
 	}
 	return parsedPort
