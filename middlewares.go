@@ -17,6 +17,10 @@ func CorsMiddleware(cors *Cors) HandlerFunc {
 		c.request.Header.Set("Access-Control-Expose-Headers", strings.Join(cors.ExposedHeaders, ", "))
 		c.request.Header.Set("Access-Control-Max-Age", strconv.Itoa(cors.MaxAge))
 		c.request.Header.Set("Access-Control-Allow-Credentials", strconv.FormatBool(cors.AllowCredentials))
+		if c.request.Method == http.MethodOptions {
+			c.writer.WriteHeader(http.StatusOK)
+			return
+		}
 		c.Next()
 	}
 }
