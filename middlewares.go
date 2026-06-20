@@ -3,9 +3,23 @@ package bagoette
 import (
 	"net/http"
 	"runtime/debug"
+	"strconv"
+	"strings"
 
 	"github.com/sevelfatt/bagoette/utils"
 )
+
+func CorsMiddleware(cors *Cors) HandlerFunc {
+	return func(c *Ctx) {
+		c.request.Header.Set("Access-Control-Allow-Origin", strings.Join(cors.AllowedOrigins, ", "))
+		c.request.Header.Set("Access-Control-Allow-Methods", strings.Join(cors.AllowedMethods, ", "))
+		c.request.Header.Set("Access-Control-Allow-Headers", strings.Join(cors.AllowedHeaders, ", "))
+		c.request.Header.Set("Access-Control-Expose-Headers", strings.Join(cors.ExposedHeaders, ", "))
+		c.request.Header.Set("Access-Control-Max-Age", strconv.Itoa(cors.MaxAge))
+		c.request.Header.Set("Access-Control-Allow-Credentials", strconv.FormatBool(cors.AllowCredentials))
+		c.Next()
+	}
+}
 
 func (b *BagoetteClient) NotFoundMiddleware(c *Ctx) {
 	for _, route := range *b.routes {

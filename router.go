@@ -11,6 +11,7 @@ type RouteGroup struct {
 	routes *[]Route
 	middlewares []HandlerFunc
 	prefix string
+	opts *Options
 }
 
 //Route struct: Define individual route
@@ -22,6 +23,8 @@ type Route struct {
 	paramKeys []string
 
 	handlers []HandlerFunc
+
+	opts *Options
 }
 
 func (r *Route) Check() error {
@@ -44,10 +47,15 @@ func (r *Route) Check() error {
 }
 
 func (b *BagoetteClient) NewRouter() *RouteGroup {
+	middlewares := []HandlerFunc{b.NotFoundMiddleware, b.MethodNotAllowedMiddleware, b.InternalServerErrorMiddleware}
+	if b.Opts.UseCors {
+		middlewares = append(middlewares, CorsMiddleware(b.Opts.Cors))
+	}
 	return &RouteGroup{
 		routes:      b.routes,
-		middlewares: []HandlerFunc{b.NotFoundMiddleware, b.MethodNotAllowedMiddleware, b.InternalServerErrorMiddleware},
+		middlewares: middlewares,
 		prefix:      "",
+		opts:        b.Opts,
 	}
 }
 

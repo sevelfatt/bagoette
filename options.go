@@ -8,12 +8,16 @@ import (
 type Options struct {
 	Port          int
 	MaxUploadSize int64
+	UseCors       bool
+	Cors          *Cors
 }
 
 func NewOptions() *Options {
 	return &Options{
 		Port:          getDefaultPort(),
 		MaxUploadSize: 10 * 1024 * 1024, // 10MB
+		UseCors:       false,
+		Cors:          NewCors(),
 	}
 }
 

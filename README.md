@@ -25,7 +25,7 @@ func main() {
 	r := b.NewRouter() // create new router
 
 	r.Get("/ping", func(c *bagoette.Ctx){
-		c.Respond(200, "pong")
+		c.Respond(200, "pong") // respond to client with status code 200 and message "pong"
 	}) // open new route with GET method on /ping path
 
 	b.Serve() // start the server
