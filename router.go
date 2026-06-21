@@ -49,7 +49,7 @@ func (r *Route) Check() error {
 func (b *BagoetteClient) NewRouter() *RouteGroup {
 	middlewares := []HandlerFunc{b.NotFoundMiddleware, b.MethodNotAllowedMiddleware, b.InternalServerErrorMiddleware}
 	if b.Opts.UseCors {
-		middlewares = append(middlewares, CorsMiddleware(b.Opts.Cors))
+		middlewares = append(middlewares, b.CorsMiddleware)
 	}
 	return &RouteGroup{
 		routes:      b.routes,

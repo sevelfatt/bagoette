@@ -9,20 +9,18 @@ import (
 	"github.com/sevelfatt/bagoette/utils"
 )
 
-func CorsMiddleware(cors *Cors) HandlerFunc {
-	return func(c *Ctx) {
-		c.request.Header.Set("Access-Control-Allow-Origin", strings.Join(cors.AllowedOrigins, ", "))
-		c.request.Header.Set("Access-Control-Allow-Methods", strings.Join(cors.AllowedMethods, ", "))
-		c.request.Header.Set("Access-Control-Allow-Headers", strings.Join(cors.AllowedHeaders, ", "))
-		c.request.Header.Set("Access-Control-Expose-Headers", strings.Join(cors.ExposedHeaders, ", "))
-		c.request.Header.Set("Access-Control-Max-Age", strconv.Itoa(cors.MaxAge))
-		c.request.Header.Set("Access-Control-Allow-Credentials", strconv.FormatBool(cors.AllowCredentials))
+func (b *BagoetteClient) CorsMiddleware(c *Ctx) {
+		c.request.Header.Set("Access-Control-Allow-Origin", strings.Join(b.Opts.Cors.AllowedOrigins, ", "))
+		c.request.Header.Set("Access-Control-Allow-Methods", strings.Join(b.Opts.Cors.AllowedMethods, ", "))
+		c.request.Header.Set("Access-Control-Allow-Headers", strings.Join(b.Opts.Cors.AllowedHeaders, ", "))
+		c.request.Header.Set("Access-Control-Expose-Headers", strings.Join(b.Opts.Cors.ExposedHeaders, ", "))
+		c.request.Header.Set("Access-Control-Max-Age", strconv.Itoa(b.Opts.Cors.MaxAge))
+		c.request.Header.Set("Access-Control-Allow-Credentials", strconv.FormatBool(b.Opts.Cors.AllowCredentials))
 		if c.request.Method == http.MethodOptions {
 			c.writer.WriteHeader(http.StatusOK)
 			return
 		}
 		c.Next()
-	}
 }
 
 func (b *BagoetteClient) NotFoundMiddleware(c *Ctx) {
